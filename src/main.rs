@@ -1,4 +1,9 @@
-
+/*
+* TURBO TITANS
+* LOGAN CAMMISH
+* 
+* This is a single-threaded program
+ */
 
 use std::fs::File;
 use std::io::BufReader;
@@ -12,11 +17,12 @@ impl Songs {
         return format!("./audio/{}.wav", input); 
     }
     fn play_audio(&self, location: &str, len: u64, sleep: bool) -> &Songs {
-        // this portion was modified from https://docs.rs/rodio/latest/rodio/
-        let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-        let file = BufReader::new(File::open(location).unwrap());
-        let source = Decoder::new(file).unwrap();
-        stream_handle.play_raw(source.convert_samples()).expect("Error playing audio.");
+        let (_stream, stream_handle) = OutputStream::try_default().unwrap(); 
+        let file = BufReader::new(File::open(location).unwrap()); /* bufreader is used to create a buffer,
+                                                                                                * allowing for additional functionality 
+                                                                                                * on the file read, but is inefficient*/
+        let source = Decoder::new(file).unwrap(); // decode the file
+        stream_handle.play_raw(source.convert_samples()).expect("Error playing audio."); // attempt to play the audio file
         //
         if sleep == true {
             std::thread::sleep(std::time::Duration::from_secs(len))
