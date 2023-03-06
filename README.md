@@ -1,6 +1,6 @@
 # turbo-titans
 Car racing game made in Rust.
-For school. Incomplete.
+ Incomplete.
 
 ## Dependencies:
 * `rodio 0.17.1`
