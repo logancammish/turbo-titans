@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 rodio = "0.17.1"
 colored = "2"
+once_cell = "1.17.1"
