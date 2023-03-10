@@ -64,7 +64,7 @@ impl Songs {
     // necessary to constantly rewrite the location of 
     // the audio files
     fn get_file(&self, input: &str) -> String { 
-        return format!("C:/Users/l.j.cammish/Desktop/11 Digi TECH/rust/proj/project/src/audio/{}.wav", input); 
+        return format!("0000000000000audio/{}.wav", input); 
     }
     // play the given audio file
     // takes 3 arguments: location, len, and sleep
