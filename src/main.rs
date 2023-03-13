@@ -8,7 +8,6 @@ use std::fs::File;
 use std::io::BufReader;
 use rodio::{Decoder, OutputStream, source::Source};
 use colored::Colorize;
-use std::collections::HashMap;
 
 mod string_funcs {
     pub fn is_num(input: &str) -> bool {
@@ -64,7 +63,7 @@ impl Songs {
     // necessary to constantly rewrite the location of 
     // the audio files
     fn get_file(&self, input: &str) -> String { 
-        return format!("0000000000000audio/{}.wav", input); 
+        return format!("C:/Users/l.j.cammish/Desktop/11 Digi TECH/rust/proj/project/src/audio/{}.wav", input); 
     }
     // play the given audio file
     // takes 3 arguments: location, len, and sleep
@@ -90,14 +89,9 @@ fn main() {
     // define the "car_options"  hashmap
     // a 'hashmap' is similar to dictionaries in other languages
     // both the key and its data are teh &str data type
-    let car_options: HashMap<&str, &str> = HashMap::from([
-        ("CARTYPE1", "a"),
-        ("two", "a"),
-        ("three", "a"),
-        ("four", "a"),
-        ("five", "a"),
-        ("six", "a")
-    ]);
+    static CAR_OPTIONS: [&str; 6] = [
+        "a", "a", "a", "a", "a", "a"
+    ];
 
     Songs.play_audio(Songs.get_file("engine-rev").as_str(), 4, true); // play the engine-rev sound
     println!("{}", ("Welcome to Turbo Titans!").green().underline()); // utilizes colored to print a colored output
@@ -105,50 +99,35 @@ fn main() {
     println!("You have 6 car options! Choose wisely...");
     std::thread::sleep(std::time::Duration::from_secs(1/2));
 
-    for (k,v ) in car_options.iter() {
-        println!("{}: {}",k, v)
+    for k in 1..CAR_OPTIONS.len() {
+        let v: &str = CAR_OPTIONS[k];
+        println!("{}: {}", k, v)
     }  // "iter" is used here to iterate through the hashmap.
 
-    fn get_car() -> i32 {
-        loop {
-            let input: String = Game::take_input("i32");
-            let input: &str = input.as_str().trim();
-            if !(input == String::new()) {
-                println!("You inputted: {}", input);
-                return input.parse::<i32>().unwrap();
+    struct Car {}
+    impl Car {
+        fn get_car() -> usize {
+            loop {
+                let input: String = Game::take_input("i32");
+                let input: &str = input.as_str().trim();
+                if !(input == String::new()) {
+                    println!("You inputted: {}", input);
+                    return input.parse::<usize>().unwrap();
+                } else {
+                    println!("Invalid input, please enter a value which can be converted to a 32 bit integer.")
+                }
+            }
+        }
+        fn check_car(input: usize) {
+            if (input < 7) && (input > 0) {
+                print!("{}", &CAR_OPTIONS[input]);
             } else {
-                println!("Invalid input, please enter a value which can be converted to a 32 bit integer.")
-            }
-        }
-    }
-    fn check_car(input: i32) {
-        match input {
-            1 => {
-
-            }
-            2 => {
-
-            }
-            3 => {
-
-            }
-            4 => {
-
-            }
-            5  => {
-
-            }
-            6 => {
-
-            }
-            _ => {
                 println!("Invalid input, please enter a value from 1-6");
-                check_car(get_car());
+                Car::check_car(Car::get_car());
             }
         }
     }
-
-    check_car(get_car());
+    Car::check_car(Car::get_car());
 
     Game::end();
 }
