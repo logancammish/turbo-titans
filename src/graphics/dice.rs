@@ -1,3 +1,5 @@
+use rand::prelude::*;
+
 pub fn generate() -> usize {
     let die: [&str; 6] = [
         "__________\n|        |\n|    *   |\n|        |\n|________|",
