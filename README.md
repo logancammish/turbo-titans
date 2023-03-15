@@ -16,5 +16,6 @@ Run the batch script found in `src` called `run.bat`
 * `Rust 1.68.0`
 * `rodio 0.17.1`
 * `colored 2`
-* `pbr 1.0.3`
-* `once_cell 1.17.1`
+* `crossterm latest`
+* `rand latest`
+
