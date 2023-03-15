@@ -24,7 +24,7 @@ pub struct Car {}
 impl Car {
     pub fn show(pos: &str) {
         match pos {
-            "left" => {
+            "center" => {
                 println!( "____ [.] ____");
                 return;
             }
@@ -32,7 +32,7 @@ impl Car {
                 println!( "_______ [.] _");
                 return;
             }
-            "center" => {
+            "left" => {
                 println!( "_ [.] _______");
                 return;
             }
@@ -42,6 +42,7 @@ impl Car {
         }
     }
 
+    #[allow(dead_code)]
     pub fn get_location() -> (i32, String) {
         return (1, String::from("center"));
     }

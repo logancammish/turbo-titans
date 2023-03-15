@@ -6,9 +6,10 @@
 use colored::Colorize;
 use rodio::{source::Source, Decoder, OutputStream};
 use std::fs::File;
-use std::io::stdin;
-use std::io::BufReader;
+use std::io::{stdin, BufReader};
 mod graphics;
+use crossterm::event::{read, Event, KeyCode, KeyEvent, KeyModifiers, KeyEventKind, KeyEventState};
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 
 mod string_funcs {
     pub fn is_num(input: &str) -> bool {
@@ -125,7 +126,7 @@ fn main() {
             }
         }
         fn check_car(input: usize) {
-            if (input < 7) && (input > 0) {
+            if (input < 6) && (input > 0) {
                 print!("{}", &CAR_OPTIONS[input]);
             } else {
                 println!("Invalid input, please enter a value from 1-6");
@@ -134,13 +135,46 @@ fn main() {
         }
     }
     CarInput::check_car(CarInput::get_car());
-    
+
     graphics::Dice::generate();
 
-    graphics::Car::show("right");
-    graphics::Car::show("left");
-    graphics::Car::show("center");
-    graphics::Car::show("");
+    println!("\n\n");
+
+    enable_raw_mode().expect("Error: Unable to enter raw mode, perhaps your Operating System is unsupported?");
+    loop {
+        match read().unwrap() {
+            Event::Key(KeyEvent {
+                code: KeyCode::Char('w'),
+                modifiers: KeyModifiers::NONE, 
+                kind: KeyEventKind::Press, 
+                state: KeyEventState::NONE
+            }) => { graphics::Car::show("center"); }
+
+            Event::Key(KeyEvent {
+                code: KeyCode::Char('a'),
+                modifiers: KeyModifiers::NONE, 
+                kind: KeyEventKind::Press, 
+                state: KeyEventState::NONE
+            }) => { graphics::Car::show("left"); }
+
+            Event::Key(KeyEvent {
+                code: KeyCode::Char('d'),
+                modifiers: KeyModifiers::NONE, 
+                kind: KeyEventKind::Press, 
+                state: KeyEventState::NONE
+            }) => { graphics::Car::show("right"); }
+
+            Event::Key(KeyEvent {
+                code: KeyCode::Esc,
+                modifiers: KeyModifiers::NONE, 
+                kind: KeyEventKind::Press, 
+                state: KeyEventState::NONE
+            }) => { break; }
+            
+            _ => {  }
+        }
+    }
+    disable_raw_mode().expect("Error: Unable to exit raw mode, perhaps your Operating System is unsupported?");
 
     Game::end();
 }
