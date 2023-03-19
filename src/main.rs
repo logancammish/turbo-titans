@@ -126,9 +126,7 @@ fn main() {
             }
         }
         fn check_car(input: usize) {
-            if (input < 6) && (input > 0) {
-                print!("{}", &CAR_OPTIONS[input]);
-            } else {
+            if !((input < 6) && (input > 0)) {
                 println!("Invalid input, please enter a value from 1-6");
                 CarInput::check_car(CarInput::get_car());
             }
@@ -141,6 +139,7 @@ fn main() {
     println!("\n\n");
 
     enable_raw_mode().expect("Error: Unable to enter raw mode, perhaps your Operating System is unsupported?");
+    let mut i: i32 = 0;
     loop {
         match read().unwrap() {
             Event::Key(KeyEvent {
@@ -148,21 +147,21 @@ fn main() {
                 modifiers: KeyModifiers::NONE, 
                 kind: KeyEventKind::Press, 
                 state: KeyEventState::NONE
-            }) => { graphics::Car::show("center"); }
+            }) => { i+=1; graphics::Car::show("center", i); }
 
             Event::Key(KeyEvent {
                 code: KeyCode::Char('a'),
                 modifiers: KeyModifiers::NONE, 
                 kind: KeyEventKind::Press, 
                 state: KeyEventState::NONE
-            }) => { graphics::Car::show("left"); }
+            }) => { i+=1; graphics::Car::show("left", i); }
 
             Event::Key(KeyEvent {
                 code: KeyCode::Char('d'),
                 modifiers: KeyModifiers::NONE, 
                 kind: KeyEventKind::Press, 
                 state: KeyEventState::NONE
-            }) => { graphics::Car::show("right"); }
+            }) => { i+=1; graphics::Car::show("right", i); }
 
             Event::Key(KeyEvent {
                 code: KeyCode::Esc,

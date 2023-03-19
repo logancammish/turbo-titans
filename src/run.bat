@@ -1,3 +1,3 @@
-@echo on
+@echo off
 cargo run
 pause
