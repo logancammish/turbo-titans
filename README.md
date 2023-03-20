@@ -6,11 +6,23 @@ Car racing game made in Rust.
 
 Incomplete.
 
+## Inefficiencies to note:
+* The rodio crate (library), specifically this version (`0.17.1`) can see several inefficiencies relating to build and compile times. As an end-user using a binary which has already been compiled, you should not notice any problems.
+* In `main.rs`, I implemented a relatively inefficient method to check if a `&str` (string slice) contains an integer value. 
+
 ## Installation: 
-Clone this github repo to any directory
+Clone this github repo to any directory (`git clone https://github.com/logancammish/turbo-titans.git`)
 
 ## Running: 
-Run the batch script found in `src` called `run.bat`
+Windows: Run the batch script found in `src` called `run.bat`.
+
+Linux: you should be able to convert this file (`run.bat`) to the `.sh` extension without issue.
+#### You have to install Rust to run this program
+MacOS/Linux: `curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh`
+
+Windows: https://www.rust-lang.org/tools/install 
+
+
 
 ## Dependencies:
 * `Rust 1.68.0`
@@ -18,4 +30,3 @@ Run the batch script found in `src` called `run.bat`
 * `colored 2`
 * `crossterm latest`
 * `rand latest`
-
