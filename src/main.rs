@@ -7,9 +7,11 @@ use colored::Colorize;
 use rodio::{source::Source, Decoder, OutputStream};
 use std::fs::File;
 use std::io::{stdin, BufReader};
+use std::time::Instant;
 mod graphics;
 use crossterm::event::{read, Event, KeyCode, KeyEvent, KeyModifiers, KeyEventKind, KeyEventState};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+use serde_json::{self, json};
 
 mod string_funcs {
     pub fn is_num(input: &str) -> bool {
@@ -79,11 +81,11 @@ impl Songs {
     // tells the program whether or not it should
     // sleep the thread for the audio
     fn play_audio(&self, location: &str, len: u64, sleep: bool) -> &Songs {
-        let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-        let file: BufReader<File> = BufReader::new(File::open(location).unwrap()); /* bufreader is used to create a buffer,
+        let (_stream, stream_handle) = OutputStream::try_default().expect("Error in OutputStream");
+        let file: BufReader<File> = BufReader::new(File::open(location).expect("Error in BufReader")); /* bufreader is used to create a buffer,
                                                                                     * allowing for additional functionality
                                                                                     * on the file read, but is inefficient*/
-        let source: Decoder<BufReader<File>> = Decoder::new(file).unwrap(); // decode the file
+        let source: Decoder<BufReader<File>> = Decoder::new(file).expect("Error in Decoder"); // decode the file
         stream_handle
             .play_raw(source.convert_samples())
             .expect("Error playing audio."); // attempt to play the audio file
@@ -95,25 +97,25 @@ impl Songs {
 }
 
 fn main() {
-    // define the "car_options"  hashmap
-    // a 'hashmap' is similar to dictionaries in other languages
-    // both the key and its data are teh &str data type
+    // define the "car_options"  array
+    // an array is defined as [type; length] in rust
+    // car_options is an array of string slices with a length of 6
     static CAR_OPTIONS: [&str; 6] = ["a", "a", "a", "a", "a", "a"];
 
     Songs.play_audio(Songs.get_file("engine-rev").as_str(), 4, true); // play the engine-rev sound
     println!("{}", ("Welcome to Turbo Titans!").green().underline()); // utilizes colored to print a colored output
     std::thread::sleep(std::time::Duration::from_secs(1)); // sleep the current thread
-    println!("You have 6 car options! Choose wisely...");
-    std::thread::sleep(std::time::Duration::from_secs(1 / 2));
+    println!("You have 6 car options! Choose wisely..."); // intro
+    std::thread::sleep(std::time::Duration::from_secs(1 / 2)); // "
 
     for k in 1..CAR_OPTIONS.len() {
         let v: &str = CAR_OPTIONS[k];
         println!("{}: {}", k, v)
-    } // "iter" is used here to iterate through the hashmap.
+    } // iterating through the array and printing its contents
 
     struct CarInput {}
     impl CarInput {
-        fn get_car() -> usize {
+        fn get_car() -> usize { // get the chosen car
             loop {
                 let input: String = Game::take_input("i32");
                 let input: &str = input.as_str().trim();
@@ -125,52 +127,67 @@ fn main() {
                 }
             }
         }
-        fn check_car(input: usize) {
+        fn check_car(input: usize) { // check if the car input was valid
             if !((input < 6) && (input > 0)) {
                 println!("Invalid input, please enter a value from 1-6");
-                CarInput::check_car(CarInput::get_car());
+                CarInput::check_car(CarInput::get_car()); // iterate
             }
         }
     }
-    CarInput::check_car(CarInput::get_car());
+    CarInput::check_car(CarInput::get_car()); // get the users car!
 
-    graphics::Dice::generate();
+    graphics::Dice::generate(); // generate a dice roll
 
     println!("\n\n");
 
     enable_raw_mode().expect("Error: Unable to enter raw mode, perhaps your Operating System is unsupported?");
     let mut i: i32 = 0;
     loop {
-        match read().unwrap() {
+        fn some_to_i64(n: Option<i64>) -> i64 {
+            let number: i64 = match n {
+                Some(n) => n,
+                None => 0, 
+            };
+            return number;
+        }
+
+        let _playerinfo = std::io::BufReader::new(File::open("./playerinfo.json").expect("Error"));
+        let playerinfo: serde_json::Value = serde_json::from_reader(_playerinfo).expect("Error");
+        println!("{:?}", playerinfo);
+        println!("{:?}", json!(playerinfo.get("user")).as_i64());
+
+        assert!(some_to_i64(json!(playerinfo.get("user")).as_i64()) == 1);
+
+        match read().unwrap() { // match the input codes
             Event::Key(KeyEvent {
                 code: KeyCode::Char('w'),
                 modifiers: KeyModifiers::NONE, 
                 kind: KeyEventKind::Press, 
                 state: KeyEventState::NONE
-            }) => { i+=1; graphics::Car::show("center", i); }
+            }) => { i+=1;  graphics::Car::show("center", i);} // detect w key press
 
             Event::Key(KeyEvent {
                 code: KeyCode::Char('a'),
                 modifiers: KeyModifiers::NONE, 
                 kind: KeyEventKind::Press, 
                 state: KeyEventState::NONE
-            }) => { i+=1; graphics::Car::show("left", i); }
+            }) => { i+=1; graphics::Car::show("left", i); } // detect a key press
 
             Event::Key(KeyEvent {
                 code: KeyCode::Char('d'),
                 modifiers: KeyModifiers::NONE, 
                 kind: KeyEventKind::Press, 
                 state: KeyEventState::NONE
-            }) => { i+=1; graphics::Car::show("right", i); }
+            }) => { i+=1; graphics::Car::show("right", i); } // detect d key press
 
             Event::Key(KeyEvent {
                 code: KeyCode::Esc,
                 modifiers: KeyModifiers::NONE, 
                 kind: KeyEventKind::Press, 
                 state: KeyEventState::NONE
-            }) => { break; }
+            }) => { break; } // detect esc key press
             
-            _ => {  }
+            _ => {  } // no input
         }
     }
     disable_raw_mode().expect("Error: Unable to exit raw mode, perhaps your Operating System is unsupported?");
