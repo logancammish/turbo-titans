@@ -7,9 +7,9 @@ use colored::Colorize;
 use rodio::{source::Source, Decoder, OutputStream};
 use std::fs::File;
 use std::io::{stdin, BufReader};
-use std::time::Instant;
+use std::process::Command;
 mod graphics;
-use crossterm::event::{read, Event, KeyCode, KeyEvent, KeyModifiers, KeyEventKind, KeyEventState};
+use crossterm::event::{read, Event, KeyCode, KeyEvent, KeyEventKind, KeyEventState, KeyModifiers};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use serde_json::{self, json};
 
@@ -68,6 +68,7 @@ impl Songs {
     // this improves readability of the code so its not
     // necessary to constantly rewrite the location of
     // the audio files
+    #[allow(dead_code)]
     fn get_file(&self, input: &str) -> String {
         return format!(
             "C:/Users/l.j.cammish/Desktop/11 Digi TECH/rust/proj/project/src/audio/{}.wav",
@@ -80,11 +81,14 @@ impl Songs {
     // the length it should sleep for, and sleep
     // tells the program whether or not it should
     // sleep the thread for the audio
+
+    #[allow(dead_code)]
     fn play_audio(&self, location: &str, len: u64, sleep: bool) -> &Songs {
         let (_stream, stream_handle) = OutputStream::try_default().expect("Error in OutputStream");
-        let file: BufReader<File> = BufReader::new(File::open(location).expect("Error in BufReader")); /* bufreader is used to create a buffer,
-                                                                                    * allowing for additional functionality
-                                                                                    * on the file read, but is inefficient*/
+        let file: BufReader<File> =
+            BufReader::new(File::open(location).expect("Error in BufReader")); /* bufreader is used to create a buffer,
+                                                                                * allowing for additional functionality
+                                                                                * on the file read, but is inefficient*/
         let source: Decoder<BufReader<File>> = Decoder::new(file).expect("Error in Decoder"); // decode the file
         stream_handle
             .play_raw(source.convert_samples())
@@ -102,7 +106,7 @@ fn main() {
     // car_options is an array of string slices with a length of 6
     static CAR_OPTIONS: [&str; 6] = ["a", "a", "a", "a", "a", "a"];
 
-    Songs.play_audio(Songs.get_file("engine-rev").as_str(), 4, true); // play the engine-rev sound
+    //Songs.play_audio(Songs.get_file("engine-rev").as_str(), 4, true); // play the engine-rev sound
     println!("{}", ("Welcome to Turbo Titans!").green().underline()); // utilizes colored to print a colored output
     std::thread::sleep(std::time::Duration::from_secs(1)); // sleep the current thread
     println!("You have 6 car options! Choose wisely..."); // intro
@@ -115,7 +119,8 @@ fn main() {
 
     struct CarInput {}
     impl CarInput {
-        fn get_car() -> usize { // get the chosen car
+        fn get_car() -> usize {
+            // get the chosen car
             loop {
                 let input: String = Game::take_input("i32");
                 let input: &str = input.as_str().trim();
@@ -127,70 +132,146 @@ fn main() {
                 }
             }
         }
-        fn check_car(input: usize) { // check if the car input was valid
+        fn check_car(input: usize) -> usize {
+            // check if the car input was valid
             if !((input < 6) && (input > 0)) {
                 println!("Invalid input, please enter a value from 1-6");
-                CarInput::check_car(CarInput::get_car()); // iterate
+                return CarInput::check_car(CarInput::get_car()); // iterate
+            } else {
+                return input;
             }
         }
     }
-    CarInput::check_car(CarInput::get_car()); // get the users car!
-
-    graphics::Dice::generate(); // generate a dice roll
-
-    println!("\n\n");
-
-    enable_raw_mode().expect("Error: Unable to enter raw mode, perhaps your Operating System is unsupported?");
-    let mut i: i32 = 0;
-    loop {
-        fn some_to_i64(n: Option<i64>) -> i64 {
-            let number: i64 = match n {
-                Some(n) => n,
-                None => 0, 
-            };
-            return number;
+    // oops...DRY failed
+    struct LengthInput {}
+    impl LengthInput {
+        fn get_length() -> f64 {
+            let input: String = Game::take_input("i32");
+            let input: &str = input.as_str().trim();
+            if !(input == String::new()) {
+                println!("You inputted: {}", input);
+                return input.parse::<f64>().unwrap();
+            } else {
+                println!("Invalid input, please enter a value which can be converted to a 32 bit integer.");
+                return LengthInput::get_length();
+            }
         }
-
-        let _playerinfo = std::io::BufReader::new(File::open("./playerinfo.json").expect("Error"));
-        let playerinfo: serde_json::Value = serde_json::from_reader(_playerinfo).expect("Error");
-        println!("{:?}", playerinfo);
-        println!("{:?}", json!(playerinfo.get("user")).as_i64());
-
-        assert!(some_to_i64(json!(playerinfo.get("user")).as_i64()) == 1);
-
-        match read().unwrap() { // match the input codes
-            Event::Key(KeyEvent {
-                code: KeyCode::Char('w'),
-                modifiers: KeyModifiers::NONE, 
-                kind: KeyEventKind::Press, 
-                state: KeyEventState::NONE
-            }) => { i+=1;  graphics::Car::show("center", i);} // detect w key press
-
-            Event::Key(KeyEvent {
-                code: KeyCode::Char('a'),
-                modifiers: KeyModifiers::NONE, 
-                kind: KeyEventKind::Press, 
-                state: KeyEventState::NONE
-            }) => { i+=1; graphics::Car::show("left", i); } // detect a key press
-
-            Event::Key(KeyEvent {
-                code: KeyCode::Char('d'),
-                modifiers: KeyModifiers::NONE, 
-                kind: KeyEventKind::Press, 
-                state: KeyEventState::NONE
-            }) => { i+=1; graphics::Car::show("right", i); } // detect d key press
-
-            Event::Key(KeyEvent {
-                code: KeyCode::Esc,
-                modifiers: KeyModifiers::NONE, 
-                kind: KeyEventKind::Press, 
-                state: KeyEventState::NONE
-            }) => { break; } // detect esc key press
-            
-            _ => {  } // no input
+        fn check_length(input: f64) -> f64 {
+            // check if the car input was valid
+            if !((input < 16.0) && (input > 4.0)) {
+                println!("Invalid input, please enter a value from 5-15");
+                return CarInput::check_car(CarInput::get_car()) as f64; // iterate
+            } else {
+                return input;
+            }
         }
     }
-    disable_raw_mode().expect("Error: Unable to exit raw mode, perhaps your Operating System is unsupported?");
 
+    println!("Car choice: ");
+    let car: f64 = CarInput::check_car(CarInput::get_car()) as f64; // get the users car!
+    println!("Enter race length (5-15km): ");
+    let length: f64 = LengthInput::check_length(LengthInput::get_length());
+    println!("\n\n");
+
+    let mut i: f64 = 0.0;
+    loop {
+        println!("\n{}km/{}km", i, length);
+        if i > length {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_secs(1));
+
+        struct JSONRetrieve {}
+        impl JSONRetrieve {
+            fn get_f64_val(index: &str, playerinfo: serde_json::Value) -> f64 {
+                let number: f64 = match json!(playerinfo.get(index)).as_f64() {
+                    Some(n) => n,
+                    None => 0.0,
+                };
+                return number;
+            }
+        }
+
+        let dice_roll: f64 = graphics::Dice::generate(); // generate a dice roll
+        let _playerinfo = std::io::BufReader::new(File::open("./playerinfo.json").expect("Error"));
+        let playerinfo: serde_json::Value = serde_json::from_reader(_playerinfo).expect("Error");
+
+        //println!("{:?}", JSONRetrieve::get_f64_val("highscore", playerinfo));
+        //println!("{:?}", playerinfo);
+        //println!("{}|{}", dice_roll, car);
+
+
+        /*print!("Press enter to continue:");
+        let mut temp: String = String::new();
+        stdin().read_line(&mut temp).expect("Error");
+        //drop(_temp); /* same code as earlier, except now it awaits for any input */
+        println!("{}", temp);*/
+
+        enable_raw_mode().expect("Error: Unable to enter raw mode, perhaps your Operating System is unsupported?");
+        let read_line_cur: Event = read().unwrap();
+        if dice_roll == car {
+            match read_line_cur {
+                // match the input codes
+                Event::Key(KeyEvent {
+                    code: KeyCode::Char('w'),
+                    modifiers: KeyModifiers::NONE,
+                    kind: KeyEventKind::Press,
+                    state: KeyEventState::NONE,
+                }) => {
+                    i += 0.25;
+                    graphics::Car::show("center", i);
+                } // detect w key press
+
+                Event::Key(KeyEvent {
+                    code: KeyCode::Char('a'),
+                    modifiers: KeyModifiers::NONE,
+                    kind: KeyEventKind::Press,
+                    state: KeyEventState::NONE,
+                }) => {
+                    i += 0.25;
+                    graphics::Car::show("left", i);
+                } // detect a key press
+
+                Event::Key(KeyEvent {
+                    code: KeyCode::Char('d'),
+                    modifiers: KeyModifiers::NONE,
+                    kind: KeyEventKind::Press,
+                    state: KeyEventState::NONE,
+                }) => {
+                    i += 0.25;
+                    graphics::Car::show("right", i);
+                } // detect d key press
+
+                Event::Key(KeyEvent {
+                    code: KeyCode::Esc,
+                    modifiers: KeyModifiers::NONE,
+                    kind: KeyEventKind::Press,
+                    state: KeyEventState::NONE,
+                }) => {
+                    break;
+                } // detect esc key press
+
+                _ => {
+                    i += 0.25;
+                } // no input
+            }
+        } else {
+            match read_line_cur {
+                Event::Key(KeyEvent {
+                    code: KeyCode::Esc,
+                    modifiers: KeyModifiers::NONE,
+                    kind: KeyEventKind::Press,
+                    state: KeyEventState::NONE,
+                }) => {
+                    break;
+                }
+
+                _ => {
+                    i += 0.25;
+                }
+            }
+        }
+        disable_raw_mode().expect("Error: Unable to exit raw mode, perhaps your Operating System is unsupported?");
+    }
     Game::end();
 }
