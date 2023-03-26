@@ -2,9 +2,7 @@
 
 [![Rust](https://github.com/logancammish/turbo-titans/actions/workflows/rust.yml/badge.svg)](https://github.com/logancammish/turbo-titans/actions/workflows/rust.yml)
 
-Car racing game made in Rust.
-
-Incomplete.
+Car racing game made in Rust. For school. Incomplete.
 
 ## Inefficiencies to note:
 * The rodio crate (library), specifically this version (`0.17.1`) can see several inefficiencies relating to build and compile times. As an end-user using a binary which has already been compiled, you should not notice any problems.
