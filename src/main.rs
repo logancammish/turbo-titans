@@ -107,6 +107,9 @@ fn main() {
     static CAR_OPTIONS: [&str; 6] = ["a", "a", "a", "a", "a", "a"];
 
     //Songs.play_audio(Songs.get_file("engine-rev").as_str(), 4, true); // play the engine-rev sound
+    println!("{}", ("GAME IS NOT READY AND SOME FEATURES MAY NOT BE FULLY FUNCTIONAL\nNOTE: MOVEMENT MECHNIC NOT FUNCTIONAL")
+        .green()
+        .underline()); // utilizes colored to print a colored output
     println!("{}", ("Welcome to Turbo Titans!").green().underline()); // utilizes colored to print a colored output
     std::thread::sleep(std::time::Duration::from_secs(1)); // sleep the current thread
     println!("You have 6 car options! Choose wisely..."); // intro
