@@ -24,12 +24,12 @@ Windows: https://www.rust-lang.org/tools/install
 
 
 ## Dependencies:
-* `Rust 1.68.0`
-* `rodio 0.17.1`
-* `colored 2`
-* `rand latest`
-* `crossterm latest`
-* `whoami 1.1.1`
-* `serde latest`
-* `serde_json latest`
-* `clearscreen latest`
+* `Rust 1.68.0` - Rust compiler
+* `rodio 0.17.1` - Used for audio playback
+* `colored 2` - Used for coloured text in output
+* `rand latest` - Used to generate random numbers
+* `crossterm latest` - Used to detect user inputs
+* `whoami 1.1.1` - .
+* `serde latest` - Used for reading JSON save files
+* `serde_json latest` - "
+* `clearscreen latest` - Used to clear the terminal output
