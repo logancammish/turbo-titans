@@ -27,5 +27,9 @@ Windows: https://www.rust-lang.org/tools/install
 * `Rust 1.68.0`
 * `rodio 0.17.1`
 * `colored 2`
-* `crossterm latest`
 * `rand latest`
+* `crossterm latest`
+* `whoami 1.1.1`
+* `serde latest`
+* `serde_json latest`
+* `clearscreen latest`
