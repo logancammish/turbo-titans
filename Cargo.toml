@@ -13,3 +13,4 @@ crossterm = "*"
 whoami = "1.1.1"
 serde = { version = "*", features = ["derive"] }
 serde_json = "*"
+clearscreen = "*"
