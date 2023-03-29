@@ -13,9 +13,11 @@ Car racing game made in Rust. For school. Incomplete.
 Clone this github repo to any directory (`git clone https://github.com/logancammish/turbo-titans.git`)
 
 ## Running: 
-Windows: Run the batch script found in `src` called `run.bat`.
+Windows: Run the batch script found in `src` called `run.bat`, alternatively check the latest release for `release.zip`.
 
-Linux: you should be able to convert this file (`run.bat`) to the `.sh` extension without issue.
+Linux: you should be able to convert this file (`run.bat`) to the `.sh` extension without major issues.
+
+MacOS: you can compile your own binary using cargo.
 #### You have to install Rust to run this program
 MacOS/Linux: `curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh`
 
