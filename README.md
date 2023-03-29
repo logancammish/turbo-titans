@@ -7,6 +7,7 @@ Car racing game made in Rust. For school. Incomplete.
 ## Inefficiencies to note:
 * The rodio crate (library), specifically this version (`0.17.1`) can see several inefficiencies relating to build and compile times. As an end-user using a binary which has already been compiled, you should not notice any problems.
 * In `main.rs`, I implemented a relatively inefficient method to check if a `&str` (string slice) contains an integer value. 
+* May face problems with the colored crate in Windows 10.
 
 ## Installation: 
 Clone this github repo to any directory (`git clone https://github.com/logancammish/turbo-titans.git`)
