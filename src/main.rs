@@ -8,6 +8,7 @@ use rodio::{source::Source, Decoder, OutputStream};
 use std::fs::File;
 use std::io::{stdin, BufReader};
 use std::process::Command;
+use clearscreen::clear;
 mod graphics;
 use crossterm::event::{read, Event, KeyCode, KeyEvent, KeyEventKind, KeyEventState, KeyModifiers};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
@@ -71,7 +72,7 @@ impl Songs {
     #[allow(dead_code)]
     fn get_file(&self, input: &str) -> String {
         return format!(
-            "C:/Users/l.j.cammish/Desktop/11 Digi TECH/rust/proj/project/src/audio/{}.wav",
+            "C:/Users/l.j.cammish/Downloads/turbo-titans-main/src/audio/{}.wav",
             input
         );
     }
@@ -106,7 +107,7 @@ fn main() {
     // car_options is an array of string slices with a length of 6
     static CAR_OPTIONS: [&str; 6] = ["a", "a", "a", "a", "a", "a"];
 
-    //Songs.play_audio(Songs.get_file("engine-rev").as_str(), 4, true); // play the engine-rev sound
+    Songs.play_audio(Songs.get_file("engine-rev").as_str(), 4, true); // play the engine-rev sound
     println!("{}", ("GAME IS NOT READY AND SOME FEATURES MAY NOT BE FULLY FUNCTIONAL\nNOTE: MOVEMENT MECHNIC NOT FUNCTIONAL")
         .green()
         .underline()); // utilizes colored to print a colored output
@@ -179,10 +180,9 @@ fn main() {
     let mut i: f64 = 0.0;
     loop {
         println!("\n{}km/{}km", i, length);
-        if i > length {
+        if i > (length - 0.1) {
             break;
         }
-        std::thread::sleep(std::time::Duration::from_secs(1));
 
         struct JSONRetrieve {}
         impl JSONRetrieve {
@@ -212,6 +212,8 @@ fn main() {
 
         enable_raw_mode().expect("Error: Unable to enter raw mode, perhaps your Operating System is unsupported?");
         let read_line_cur: Event = read().unwrap();
+        clear().expect("Err");
+        std::thread::sleep(std::time::Duration::from_secs(1));
         if dice_roll == car {
             match read_line_cur {
                 // match the input codes
@@ -274,6 +276,7 @@ fn main() {
                 }
             }
         }
+        std::thread::sleep(std::time::Duration::from_secs(1));
         disable_raw_mode().expect("Error: Unable to exit raw mode, perhaps your Operating System is unsupported?");
     }
     Game::end();

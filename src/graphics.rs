@@ -10,7 +10,7 @@ impl Dice {
         let rand_int: usize = rand::prelude::thread_rng().gen_range(0..5); // random integer from 0 to 5
         println!("You rolled {}:\n{}\n", rand_int + 1, die[rand_int].trim()); // you rolled...
 
-        return (rand_int + 1) as f64; // return the random integer generated
+        return 5.0; // (rand_int + 1) as f64; // return the random integer generated
     }
 }
 
