@@ -19,7 +19,7 @@ Linux: you should be able to convert this file (`run.bat`) to the `.sh` extensio
 #### You have to install Rust to run this program
 MacOS/Linux: `curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh`
 
-Windows: https://www.rust-lang.org/tools/install 
+Windows: `choco install rust` or find the exe at https://www.rust-lang.org/tools/install 
 
 
 
