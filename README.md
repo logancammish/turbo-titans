@@ -10,7 +10,7 @@ Car racing game made in Rust. For school. Incomplete.
 * May face problems with the colored crate in Windows 10.
 
 ## Installation: 
-Clone this github repo to any directory (`git clone https://github.com/logancammish/turbo-titans.git`) you can also find the installer under the latest release or [here](https://github.com/logancammish/turbo-titans/files/11116638/CONVER_TO_.BAT_installer.TXT) for windows.
+Clone this github repo to any directory (`git clone https://github.com/logancammish/turbo-titans.git`) you can also find the installer under the latest release or [here](https://github.com/logancammish/turbo-titans/files/11116638/CONVER_TO_.BAT_installer.TXT) for windows (please note: Github limits the file types I can upload here, so you need to convert this directly from a txt file to a bat file).
 
 ## Running: 
 Windows: Run the batch script found in `src` called `run.bat`, alternatively check the latest release for `release.zip`.
