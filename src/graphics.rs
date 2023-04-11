@@ -49,4 +49,3 @@ impl Car {
         return (1, String::from("center"));
     }
 }
-

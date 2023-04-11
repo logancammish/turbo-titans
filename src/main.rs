@@ -7,11 +7,10 @@ use colored::Colorize;
 use rodio::{source::Source, Decoder, OutputStream};
 use std::fs::File;
 use std::io::{stdin, BufReader};
-use std::process::Command;
 use clearscreen::clear;
 mod graphics;
 use crossterm::event::{read, Event, KeyCode, KeyEvent, KeyEventKind, KeyEventState, KeyModifiers};
-use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear};
 use serde_json::{self, json};
 
 mod string_funcs {
@@ -138,7 +137,7 @@ fn main() {
         }
         fn check_car(input: usize) -> usize {
             // check if the car input was valid
-            if !((input < 6) && (input > 0)) {
+            if !((input < 7) && (input > 0)) {
                 println!("Invalid input, please enter a value from 1-6");
                 return CarInput::check_car(CarInput::get_car()); // iterate
             } else {
@@ -177,7 +176,8 @@ fn main() {
     let length: f64 = LengthInput::check_length(LengthInput::get_length());
     println!("\n\n");
 
-    let mut i: f64 = 0.0;
+    let mut i: f64 = 0.0;        
+    enable_raw_mode().expect("Error: Unable to enter raw mode, perhaps your Operating System is unsupported?");
     loop {
         println!("\n{}km/{}km", i, length);
         if i > (length - 0.1) {
@@ -209,11 +209,10 @@ fn main() {
         stdin().read_line(&mut temp).expect("Error");
         //drop(_temp); /* same code as earlier, except now it awaits for any input */
         println!("{}", temp);*/
-
-        enable_raw_mode().expect("Error: Unable to enter raw mode, perhaps your Operating System is unsupported?");
-        let read_line_cur: Event = read().unwrap();
         clear().expect("Err");
         std::thread::sleep(std::time::Duration::from_secs(1));
+        println!("Enter input now: ");
+        let read_line_cur: Event = read().unwrap();
         if dice_roll == car {
             match read_line_cur {
                 // match the input codes
@@ -277,7 +276,7 @@ fn main() {
             }
         }
         std::thread::sleep(std::time::Duration::from_secs(1));
-        disable_raw_mode().expect("Error: Unable to exit raw mode, perhaps your Operating System is unsupported?");
     }
+    disable_raw_mode().expect("Error: Unable to exit raw mode, perhaps your Operating System is unsupported?");
     Game::end();
 }
