@@ -4,11 +4,14 @@
 */
 
 use colored::Colorize;
+use rand::Rng;
 use rodio::{source::Source, Decoder, OutputStream};
 use std::fs::File;
 use std::io::{stdin, BufReader};
 use clearscreen::clear;
 mod graphics;
+pub mod alternatelogic;
+use crossterm;
 use crossterm::event::{read, Event, KeyCode, KeyEvent, KeyEventKind, KeyEventState, KeyModifiers};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear};
 use serde_json::{self, json};
@@ -106,7 +109,7 @@ fn main() {
     // car_options is an array of string slices with a length of 6
     static CAR_OPTIONS: [&str; 6] = ["a", "a", "a", "a", "a", "a"];
 
-    Songs.play_audio(Songs.get_file("engine-rev").as_str(), 4, true); // play the engine-rev sound
+    //Songs.play_audio(Songs.get_file("engine-rev").as_str(), 4, true); // play the engine-rev sound
     println!("{}", ("GAME IS NOT READY AND SOME FEATURES MAY NOT BE FULLY FUNCTIONAL\nNOTE: MOVEMENT MECHNIC NOT FUNCTIONAL")
         .green()
         .underline()); // utilizes colored to print a colored output
@@ -115,9 +118,9 @@ fn main() {
     println!("You have 6 car options! Choose wisely..."); // intro
     std::thread::sleep(std::time::Duration::from_secs(1 / 2)); // "
 
-    for k in 1..CAR_OPTIONS.len() {
+    for k in 0..CAR_OPTIONS.len() {
         let v: &str = CAR_OPTIONS[k];
-        println!("{}: {}", k, v)
+        println!("{}: {}", (k + 1), v)
     } // iterating through the array and printing its contents
 
     struct CarInput {}
@@ -161,7 +164,7 @@ fn main() {
         }
         fn check_length(input: f64) -> f64 {
             // check if the car input was valid
-            if !((input < 16.0) && (input > 4.0)) {
+            if !((input < 16.0) && (input > 0.5)) {
                 println!("Invalid input, please enter a value from 5-15");
                 return CarInput::check_car(CarInput::get_car()) as f64; // iterate
             } else {
@@ -176,11 +179,26 @@ fn main() {
     let length: f64 = LengthInput::check_length(LengthInput::get_length());
     println!("\n\n");
 
-    let mut i: f64 = 0.0;        
+    let mut player_distance: f64 = 0.0;
+    let mut npc_distances: [f64; 2] = [
+        0.0, 0.0
+    ];
+    let npc_numbers: [f64; 2] = [
+        2.0, 6.0
+    ];
+    let mut i: i32 = 0;
     enable_raw_mode().expect("Error: Unable to enter raw mode, perhaps your Operating System is unsupported?");
     loop {
-        println!("\n{}km/{}km", i, length);
-        if i > (length - 0.1) {
+        i+=1;
+        println!("\n{}km/{}km", player_distance, length);
+        if player_distance > (length - 0.1) {
+            println!("You won! That took {} turns.", i);
+            break;
+        } else if npc_distances[0] > (length - 0.1) {
+            println!("NPC 1 won in {} turns!", i);
+            break;
+        } else if npc_distances[1] > (length - 0.1) {
+            println!("NPC 2 won in {} turns!", i);
             break;
         }
 
@@ -209,43 +227,13 @@ fn main() {
         stdin().read_line(&mut temp).expect("Error");
         //drop(_temp); /* same code as earlier, except now it awaits for any input */
         println!("{}", temp);*/
-        clear().expect("Err");
+        //clear().expect("Err");
         std::thread::sleep(std::time::Duration::from_secs(1));
-        println!("Enter input now: ");
+
         let read_line_cur: Event = read().unwrap();
         if dice_roll == car {
+            println!("You rolled!");
             match read_line_cur {
-                // match the input codes
-                Event::Key(KeyEvent {
-                    code: KeyCode::Char('w'),
-                    modifiers: KeyModifiers::NONE,
-                    kind: KeyEventKind::Press,
-                    state: KeyEventState::NONE,
-                }) => {
-                    i += 0.25;
-                    graphics::Car::show("center", i);
-                } // detect w key press
-
-                Event::Key(KeyEvent {
-                    code: KeyCode::Char('a'),
-                    modifiers: KeyModifiers::NONE,
-                    kind: KeyEventKind::Press,
-                    state: KeyEventState::NONE,
-                }) => {
-                    i += 0.25;
-                    graphics::Car::show("left", i);
-                } // detect a key press
-
-                Event::Key(KeyEvent {
-                    code: KeyCode::Char('d'),
-                    modifiers: KeyModifiers::NONE,
-                    kind: KeyEventKind::Press,
-                    state: KeyEventState::NONE,
-                }) => {
-                    i += 0.25;
-                    graphics::Car::show("right", i);
-                } // detect d key press
-
                 Event::Key(KeyEvent {
                     code: KeyCode::Esc,
                     modifiers: KeyModifiers::NONE,
@@ -256,7 +244,7 @@ fn main() {
                 } // detect esc key press
 
                 _ => {
-                    i += 0.25;
+                    player_distance += 0.25;
                 } // no input
             }
         } else {
@@ -271,7 +259,13 @@ fn main() {
                 }
 
                 _ => {
-                    i += 0.25;
+                    println!("You did not roll...");
+                    let npc = rand::prelude::thread_rng().gen_range(0..=1);
+                    if npc_numbers[npc] == dice_roll {
+                        npc_distances[npc] += 0.25;
+                        println!("NPC {} rolled!", (npc + 1));
+                        println!("They are now at: {}km", npc_distances[npc]);
+                    }
                 }
             }
         }
